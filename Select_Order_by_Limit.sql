@@ -1,6 +1,7 @@
 -- Week 1 Session 1: SELECT, WHERE, ORDER BY, LIMIT
 -- Table: campaign_customers
 
+DROP TABLE IF EXISTS campaign_customers;
 create table campaign_customers( 
 customer_id serial primary key,
 name varchar (50),
@@ -42,29 +43,29 @@ select * from campaign_customers order by country ASC, income DESC;
 select name, income from campaign_customers order by income DESC limit 3;
 
 
---Exce 1: Sri Lankan Customers
+--Exercise 1: Sri Lankan Customers
 select name, age from campaign_customers where country = 'Sri Lanka';
---Exce 2: Responded and income over 50000
+--Exercise 2: Responded and income over 50000
 select name, income, campaign_response from campaign_customers where income > 50000 and campaign_response = TRUE;
---Exce 3: 3 Youngest
+--Exercise 3: 3 Youngest
 select name, age from campaign_customers order by age ASC limit 3;
---Exce 4: All customers who signed up in 2023
+--Exercise 4: All customers who signed up in 2023
 select * from campaign_customers where signup_date between '2023-01-01' AND '2023-12-31';
---Exce 5: Name contains "a"
+--Exercise 5: Name contains "a"
 select * from campaign_customers where name ilike '%a%';
---Exce 6: Names of top 4 earning Non-UK customers
+--Exercise 6: Names of top 4 earning Non-UK customers
 select name, income from campaign_customers where country <> 'UK' order by income DESC limit 4;
---Exce 7: Three countries with high-earning customers
+--Exercise 7: Three countries with high-earning customers
 select distinct country from campaign_customers where income > 60000;
---Exce 8: Respondents from UK and USA
+--Exercise 8a: Respondents from UK and USA
 select * from campaign_customers where country in ('UK', 'USA') and campaign_response = TRUE;
---Exce 8: Respondents from UK and USA with or without parentheses
+--Exercise 8b: Respondents from UK and USA with or without parentheses, AND runs first, so all UK rows return.
 select * from campaign_customers where country = 'UK' or country = 'USA' and campaign_response = TRUE;
---Exce 8: Respondents from UK and USA with parentheses
+--Exercise 8c: Respondents from UK and USA with parentheses
 select * from campaign_customers where (country = 'UK' or country = 'USA') and campaign_response = TRUE;
---Exce 9: Customers didn't respond over 30, sorted income high to low
+--Exercise 9: Customers didn't respond over 30, sorted income high to low
 select * from campaign_customers where age >= 30 and campaign_response = FALSE ORDER BY income DESC;
---Exce 10: Top earners signed up after 2022-12-31
+--Exercise 10: Top earners signed up after 2022-12-31
 select name, country, income from campaign_customers where signup_date > '2022-12-31' ORDER BY income DESC limit 2;
---Exce 8: Names end with "a"
+--Exercise 11: Names end with "a"
 select * from campaign_customers where name ilike '%a';
