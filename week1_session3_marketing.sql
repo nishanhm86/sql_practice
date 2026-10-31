@@ -1,8 +1,8 @@
 -- Data quality issues.
 -- 1. The income of 666,666.00 is much higher than the second-highest income of 162,397.00
--- There are 24 missing incomes
--- The oldest person's age is 121, which is unrealistic.
--- There are odd marital-status values: Alone, Absurd, and YOLO, as they are less than 10.
+-- 2. There are 24 missing incomes
+-- 3. The oldest person's age is 121, which is unrealistic.
+-- 4. There are odd marital-status values: Alone, Absurd, and YOLO, as they are less than 10.
 
 -- Exercise 1 - How many customers are in the dataset?
 SELECT COUNT (*) AS total_customers
