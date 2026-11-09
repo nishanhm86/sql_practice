@@ -134,7 +134,8 @@ ON c.customer_id = o.customer_id
 WHERE o.amount > 100
 GROUP BY c.name, c.customer_id;
 
--- Dinesh, Farhan has no orders, and Eshani fails to meet the minimum value of 100. Hence, they are not in the table.
+-- WHERE version: Dinesh and Farhan have no orders, and Eshani has no order over 100.
+-- WHERE removes these rows before grouping, so they are missing from the result.
 
 SELECT c.name,
 c.customer_id,
