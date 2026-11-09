@@ -1,8 +1,9 @@
-create table items_ordered (item text);
-create table items_received (item text);
+DROP TABLE IF EXISTS items_ordered, items_received;
+CREATE TABLE items_ordered (item text);
+CREATE TABLE items_received (item text);
 
-insert into items_ordered values ('Pen'), ('Ink'), ('Paper'), ('Stapler');
-insert into items_received values ('Ink'), ('Paper'), ('Tape'), ('Glue');
+INSERT INTO items_ordered VALUES ('Pen'), ('Ink'), ('Paper'), ('Stapler');
+INSERT INTO items_received VALUES ('Ink'), ('Paper'), ('Tape'), ('Glue');
 
 -- INNER JOIN: only items in both lists -> 2 rows (Ink, Paper)
 SELECT o.item AS ordered,
@@ -59,6 +60,7 @@ RIGHT JOIN items_received AS r
 ON o.item = r.item
 WHERE o.item IS NULL;
 
+DROP TABLE IF EXISTS students, submissions;
 CREATE TABLE students    (student TEXT);
 CREATE TABLE submissions (student TEXT, score INT);
 
