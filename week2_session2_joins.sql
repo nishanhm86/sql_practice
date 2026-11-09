@@ -1,3 +1,5 @@
+-- Week 2, Session 2 review: INNER, LEFT, RIGHT, and FULL JOIN on small practice tables
+
 DROP TABLE IF EXISTS items_ordered, items_received;
 CREATE TABLE items_ordered (item text);
 CREATE TABLE items_received (item text);
@@ -67,7 +69,7 @@ CREATE TABLE submissions (student TEXT, score INT);
 INSERT INTO students    VALUES ('Anna'), ('Ben'), ('Chloe'), ('Dev');
 INSERT INTO submissions VALUES ('Ben', 70), ('Chloe', 85), ('Chloe', 90), ('Eli', 60);
 
--- LEFT JOIN: 5 rows. Chloe appears twice because she has two submissions
+-- LEFT JOIN: 5 rows. Chloe appears twice because she has two submissions.
 -- Anna and Dev have NULL submissions.
 SELECT s.student AS student,
 su.student AS submitted
