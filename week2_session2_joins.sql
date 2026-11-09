@@ -101,3 +101,67 @@ RIGHT JOIN submissions AS su
 ON s.student = su.student
 WHERE s.student IS NULL;
 
+-- FULL JOIN: customers and orders (reconciliation)
+-- Status count: Matched 7, No order 2, Orphan order 1 (total 10)
+SELECT
+CASE
+WHEN c.customer_id IS NULL THEN 'Orphan order'
+WHEN o.order_id IS NULL THEN 'No order'
+ELSE 'Matched'
+END AS match_status,
+COUNT(*) AS num_rows
+FROM customers AS c
+FULL JOIN orders AS o
+ON c.customer_id = o.customer_id
+GROUP BY match_status
+ORDER BY num_rows DESC;
+
+-- Full anti-join: unmatched rows from both sides -> Dinesh, Farhan, order 108 (3 rows)
+SELECT c.customer_id, o.order_id, o.amount
+FROM customers AS c
+FULL JOIN orders AS o
+ON c.customer_id = o.customer_id
+WHERE c.customer_id IS NULL OR o.order_id IS NULL;
+
+
+-- SELF JOIN: employees and their managers
+DROP TABLE IF EXISTS employees;
+CREATE TABLE employees (emp_id INT PRIMARY KEY, name TEXT, manager_id INT);
+INSERT INTO employees VALUES
+(1, 'Kamal', NULL), (2, 'Nimali', 1), (3, 'Ruwan', 1),
+(4, 'Sachini', 2), (5, 'Tharindu', 2), (6, 'Udara', 3);
+
+-- e = the employee, m = their manager.
+-- INNER JOIN: 5 rows. Kamal is missing because his manager_id is NULL.
+SELECT e.name AS employee, m.name AS manager
+FROM employees AS e
+INNER JOIN employees AS m
+ON e.manager_id = m.emp_id;
+
+-- LEFT JOIN: 6 rows. Kamal appears with 'No manager'.
+SELECT e.name AS employee, COALESCE(m.name, 'No manager') AS manager
+FROM employees AS e
+LEFT JOIN employees AS m
+ON e.manager_id = m.emp_id;
+
+-- Direct reports per manager -> Kamal 2, Nimali 2, Ruwan 1
+SELECT m.emp_id, m.name AS manager, COUNT(e.emp_id) AS direct_reports
+FROM employees AS e
+INNER JOIN employees AS m
+ON e.manager_id = m.emp_id
+GROUP BY m.emp_id, m.name
+ORDER BY direct_reports DESC, manager;
+
+-- Rows in e with no match in m (who has no manager) -> Kamal
+SELECT e.emp_id, e.name AS has_no_manager
+FROM employees AS e
+LEFT JOIN employees AS m
+ON e.manager_id = m.emp_id
+WHERE m.emp_id IS NULL;
+
+-- Rows in r with no match in e (who manages nobody) -> Sachini, Tharindu, Udara
+SELECT r.emp_id, r.name AS manages_nobody
+FROM employees AS r
+LEFT JOIN employees AS e
+ON e.manager_id = r.emp_id
+WHERE e.emp_id IS NULL;
