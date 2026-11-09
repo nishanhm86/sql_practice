@@ -1,4 +1,6 @@
+--==========================================================
 -- Week 2, Session 2 review: INNER, LEFT, RIGHT, and FULL JOIN on small practice tables
+--==========================================================
 
 DROP TABLE IF EXISTS items_ordered, items_received;
 CREATE TABLE items_ordered (item text);
@@ -35,16 +37,14 @@ FROM items_ordered AS o
 FULL JOIN items_received AS r
 ON o.item = r.item;
 
+-- WRONG anti-join: tests the preserved table (o), so it returns 0 rows.
+-- Correct version tests the other table: WHERE r.item IS NULL (next query).
 SELECT o.item AS ordered,
 r.item AS received
 FROM items_ordered AS o
 LEFT JOIN items_received AS r
 ON o.item = r.item
 WHERE o.item IS NULL;
-
--- WRONG anti-join: tests the preserved table (o), so it returns 0 rows.
--- Correct version tests the other table: WHERE r.item IS NULL (next query).
-
 
 -- Rows in items_ordered with no match in items_received -> Pen, Stapler
 SELECT o.item AS ordered,
@@ -72,15 +72,16 @@ INSERT INTO submissions VALUES ('Ben', 70), ('Chloe', 85), ('Chloe', 90), ('Eli'
 -- LEFT JOIN: 5 rows. Chloe appears twice because she has two submissions.
 -- Anna and Dev have NULL submissions.
 SELECT s.student AS student,
-su.student AS submitted
+su.student AS submitted,
+su.score
 FROM students AS s
 LEFT JOIN submissions AS su
 ON s.student = su.student;
 
-
--- RIGHT JOIN: 4 rows. Eli has a NULL student because she is not on the students list.
+-- RIGHT JOIN: 4 rows. Eli is not on the students list; hence, has a null record.
 SELECT s.student AS student,
-su.student AS submitted
+su.student AS submitted,
+su.score
 FROM students AS s
 RIGHT JOIN submissions AS su
 ON s.student = su.student;
@@ -101,6 +102,7 @@ RIGHT JOIN submissions AS su
 ON s.student = su.student
 WHERE s.student IS NULL;
 
+-- Uses the customers and orders tables created in Week 2, Session 1
 -- FULL JOIN: customers and orders (reconciliation)
 -- Status count: Matched 7, No order 2, Orphan order 1 (total 10)
 SELECT
@@ -117,12 +119,11 @@ GROUP BY match_status
 ORDER BY num_rows DESC;
 
 -- Full anti-join: unmatched rows from both sides -> Dinesh, Farhan, order 108 (3 rows)
-SELECT c.customer_id, o.order_id, o.amount
+SELECT c.name, c.customer_id, o.order_id, o.amount
 FROM customers AS c
 FULL JOIN orders AS o
 ON c.customer_id = o.customer_id
 WHERE c.customer_id IS NULL OR o.order_id IS NULL;
-
 
 -- SELF JOIN: employees and their managers
 DROP TABLE IF EXISTS employees;
@@ -147,7 +148,7 @@ ON e.manager_id = m.emp_id;
 -- Direct reports per manager -> Kamal 2, Nimali 2, Ruwan 1
 SELECT m.emp_id, m.name AS manager, COUNT(e.emp_id) AS direct_reports
 FROM employees AS e
-INNER JOIN employees AS m
+LEFT JOIN employees AS m
 ON e.manager_id = m.emp_id
 GROUP BY m.emp_id, m.name
 ORDER BY direct_reports DESC, manager;
@@ -165,3 +166,7 @@ FROM employees AS r
 LEFT JOIN employees AS e
 ON e.manager_id = r.emp_id
 WHERE e.emp_id IS NULL;
+
+-- WHERE r.item IS NULL is the correct anti-join test.
+-- A one-to-many join repeats rows (Chloe).
+-- FULL JOIN is the reconciliation tool.
