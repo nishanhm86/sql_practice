@@ -1,3 +1,12 @@
+-- ============================================================
+-- Week 2, Session 1: JOINs (IJ = inner, LJ = left, JMC = joins on marketing_campaign)
+-- Tables: customers, orders, marketing_campaign, education
+-- ============================================================
+
+-- Order 108 is orphaned.
+-- 203 customers have no education group.
+-- Filters on the right table go in ON, not WHERE.
+
 -- INNER JOIN
 
 SELECT c.name, o.order_id, o.amount
@@ -35,8 +44,8 @@ GROUP BY c.customer_id, c.name;
 
 -- Exercise 4 (IJ) - Customers with a total spend over 150
 
-SELECT c.name,
-c.customer_id,
+SELECT c.customer_id,
+c.name,
 COUNT(*) AS num_orders,
 MAX(o.order_date) AS last_order_date,
 SUM(o.amount) AS total_amount
@@ -78,17 +87,17 @@ ON c.customer_id = o.customer_id;
 -- Exercise 2 (LJ) - Count orders per customer, including customers with zero. Work out why the difference matters.
 
 SELECT c.name,
-COUNT (o.order_id) AS num_orders
+COUNT(o.order_id) AS num_orders
 FROM customers AS c
 LEFT JOIN orders AS o
 ON c.customer_id = o.customer_id
 GROUP BY c.name;
 
--- why matters: COUNT(o.oreder_id) counts only order_id's skip null values. Whereas COUNT(*) counts all rows; 
+-- why matters: COUNT(o.order_id) counts only order_id's skip null values. Whereas COUNT(*) counts all rows; 
 -- thus, NULL values are included and can produce incorrect results.
 
 SELECT c.name,
-COUNT (*) AS num_orders
+COUNT(*) AS num_orders
 FROM customers AS c
 LEFT JOIN orders AS o
 ON c.customer_id = o.customer_id
@@ -109,7 +118,7 @@ WHERE o.order_id IS NULL;
 SELECT c.name,
 c.customer_id,
 MAX(o.order_date) AS last_order_date,
-COALESCE (SUM(o.amount),0) AS total_spend
+COALESCE(SUM(o.amount),0) AS total_spend
 FROM customers AS c
 LEFT JOIN orders AS o
 ON c.customer_id = o.customer_id
@@ -118,19 +127,19 @@ GROUP BY c.name, c.customer_id;
 SELECT c.name,
 c.customer_id,
 MAX(o.order_date) AS last_order_date,
-COALESCE (SUM(o.amount),0) AS total_spend_over_100
+COALESCE(SUM(o.amount),0) AS spend_on_orders_over_100
 FROM customers AS c
 LEFT JOIN orders AS o
 ON c.customer_id = o.customer_id
 WHERE o.amount > 100
 GROUP BY c.name, c.customer_id;
 
--- Dinesh, Farhan, and Eshani are not in the table, as they fail to meet the minimum value of 100.
+-- Dinesh, Farhan has no orders, and Eshani fails to meet the minimum value of 100. Hence, they are not in the table.
 
 SELECT c.name,
 c.customer_id,
 MAX(o.order_date) AS last_order_date,
-COALESCE (SUM(o.amount),0) AS total_spend_over_100
+COALESCE(SUM(o.amount),0) AS total_spend_over_100
 FROM customers AS c
 LEFT JOIN orders AS o
 ON c.customer_id = o.customer_id AND o.amount > 100
@@ -142,9 +151,9 @@ GROUP BY c.name, c.customer_id;
 
 -- Exercise 1 (JMC) - INNER JOIN marketing_campaign to education_lookup. How many rows come back versus the full 2,240?
 
-SELECT COUNT (*) FROM
+SELECT COUNT(*) FROM
 marketing_campaign AS m
-INNER JOIN education AS e
+INNER JOIN education_lookup AS e
 ON m.education = e.education;
 
 -- This displays 2037 records.
@@ -153,7 +162,7 @@ ON m.education = e.education;
 
 SELECT COUNT (*) FROM
 marketing_campaign AS m
-LEFT JOIN education AS e
+LEFT JOIN education_lookup AS e
 ON m.education = e.education
 WHERE e.education IS NULL;
 
@@ -163,24 +172,24 @@ WHERE e.education IS NULL;
 
 SELECT DISTINCT m.education FROM
 marketing_campaign AS m
-LEFT JOIN education AS e
+LEFT JOIN education_lookup AS e
 ON m.education = e.education
 WHERE e.education IS NULL;
 
 -- Exercise 4 (JMC) - Average income and total customers per education_group.
 
 SELECT e.education_group,
-COUNT (m.id) AS total_customers,
-ROUND (AVG(income),2) AS avg_income
+COUNT(m.id) AS total_customers,
+ROUND(AVG(m.income),2) AS avg_income
 FROM marketing_campaign AS m
-LEFT JOIN education AS e
+LEFT JOIN education_lookup AS e
 ON m.education = e.education
 GROUP BY e.education_group;
 
 SELECT e.education_group,
-COUNT (m.id) AS total_customers,
-ROUND (AVG(income),2) AS avg_income
+COUNT(m.id) AS total_customers,
+ROUND(AVG(m.income),2) AS avg_income
 FROM marketing_campaign AS m
-INNER JOIN education AS e
+INNER JOIN education_lookup AS e
 ON m.education = e.education
 GROUP BY e.education_group;
