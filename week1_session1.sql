@@ -1,5 +1,7 @@
+--======================================================
 -- Week 1 Session 1: SELECT, WHERE, ORDER BY, LIMIT
 -- Table: campaign_customers
+--======================================================
 
 DROP TABLE IF EXISTS campaign_customers;
 CREATE TABLE campaign_customers( 
@@ -39,7 +41,7 @@ SELECT * FROM campaign_customers WHERE campaign_response = TRUE;
 SELECT * FROM campaign_customers WHERE country <> 'UK';
 SELECT * FROM campaign_customers ORDER BY income DESC;
 SELECT * FROM campaign_customers ORDER BY country ASC, income DESC;
-SELECT name, income FROM campaign_customers ORDER BY income DESC limit 3;
+SELECT name, income FROM campaign_customers ORDER BY income DESC LIMIT 3;
 
 
 --Exercise 1: Sri Lankan Customers
@@ -49,13 +51,13 @@ SELECT name, income, campaign_response FROM campaign_customers WHERE income > 50
 --Exercise 3: 3 Youngest
 SELECT name, age FROM campaign_customers ORDER BY age ASC limit 3;
 --Exercise 4: All customers who signed up in 2023
-SELECT * FROM campaign_customers WHERE signup_date BETWEEN '2023-01-01' AND '2023-12-31';
+SELECT * FROM campaign_customers WHERE signup_date BETWEEN '2023-01-01' AND '2024-01-01';
 --Exercise 5: Name contains "a"
-SELECT * FROM campaign_customers WHERE name ilike '%a%';
+SELECT * FROM campaign_customers WHERE name ILIKE '%a%';
 --Exercise 6: Names of top 4 earning Non-UK customers
 SELECT name, income FROM campaign_customers WHERE country <> 'UK' ORDER BY income DESC LIMIT 4;
---Exercise 7: Three countries with high-earning customers
-SELECT distinct country FROM campaign_customers WHERE income > 60000;
+-- Exercise 7: Distinct countries with customers earning over 60000.
+SELECT DISTINCT country FROM campaign_customers WHERE income > 60000;
 --Exercise 8a: Respondents from UK and USA
 SELECT * FROM campaign_customers WHERE country IN ('UK', 'USA') AND campaign_response = TRUE;
 --Exercise 8b: Respondents from UK and USA with or without parentheses, AND runs first, so all UK rows return.
@@ -67,4 +69,4 @@ SELECT * FROM campaign_customers WHERE age >= 30 AND campaign_response = FALSE O
 --Exercise 10: Top earners signed up after 2022-12-31
 SELECT name, country, income FROM campaign_customers WHERE signup_date > '2022-12-31' ORDER BY income DESC LIMIT 2;
 --Exercise 11: Names end with "a"
-SELECT * FROM campaign_customers WHERE name ilike '%a';
+SELECT * FROM campaign_customers WHERE name ILIKE '%a';
