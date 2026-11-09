@@ -1,3 +1,9 @@
+-- ============================================================
+-- Week 1, Session 3: Marketing campaign analysis
+-- Table: marketing_campaign (2,240 customers)
+-- Age = 2014 - year_birth (data collected c. 2014)
+-- ============================================================
+
 -- Data quality issues.
 -- 1. The income of 666,666.00 is much higher than the second-highest income of 162,397.00
 -- 2. There are 24 missing incomes
@@ -129,12 +135,13 @@ SELECT responsetest, COUNT(*) AS customers,
 round(AVG(income),2) AS avg_income,
 round(AVG(mntwines + mntfishproducts + mntfruits + mntmeatproducts + mntsweetproducts + mntgoldprods),2) AS avg_total_spent
 FROM marketing_campaign
-WHERE income < 600000
+WHERE income IS NOT NULL AND income < 600000
 GROUP BY responsetest;
 
--- Average income of non-responded customers is 50,511.91, and they spend an average amount of 540.38.
+-- Average income of non-responders customers is 50,511.91, and they spend an average amount of 540.38.
 -- Average income of responded customers is 60,209.68, and they spend an average amount of 985.66.
 -- WHERE income < 600000 removes the 666,666 outlier, but it also drops the 24 customers with NULL income, because a NULL never satisfies a comparison.
+-- Rows analysed: 2,215 of 2,240 (24 NULL incomes + 1 outlier removed)
 
 -- Exercise 15 - Recommendation.
 
